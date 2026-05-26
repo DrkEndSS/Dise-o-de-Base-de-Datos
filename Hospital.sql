@@ -82,6 +82,17 @@ DELETE FROM Paciente WHERE idPersona = 4;
 DELETE FROM Paciente WHERE idPersona = 5;
 DELETE FROM Paciente WHERE idPersona = LAST_INSERT_ID();
 
+-- Agregar una nueva columna
+ALTER TABLE Persona
+ADD COLUMN telefono VARCHAR(15);
+
+SELECT * FROM Persona;
+
+-- Eliminar la columna agregada
+ALTER TABLE Persona
+DROP COLUMN telefono;
+
+SELECT * FROM Persona;
 
 -- TRANSACCION de Persona
 START TRANSACTION;
@@ -95,6 +106,36 @@ COMMIT;
 ROLLBACK;
 
 SELECT * FROM Persona;
+
+
+-- Eliminar llave foránea
+ALTER TABLE Paciente
+DROP FOREIGN KEY paciente_ibfk_1;
+
+SELECT * FROM Paciente;
+
+-- Volver a crear la llave foránea
+ALTER TABLE Paciente
+ADD CONSTRAINT fk_paciente_persona
+FOREIGN KEY (idPersona)
+REFERENCES Persona(idPersona);
+
+SELECT * FROM Paciente;
+
+-- Actualizar datos
+UPDATE Paciente
+SET tipoPaciente = 'Urgente'
+WHERE idPaciente = 1;
+
+SELECT * FROM Paciente;
+
+-- Regresar valor anterior
+UPDATE Paciente
+SET tipoPaciente = 'General'
+WHERE idPaciente = 1;
+
+SELECT * FROM Paciente;
+
 
 -- TABLA EMPLEADO
 CREATE TABLE Empleado(
@@ -143,6 +184,18 @@ VALUES (3800,LAST_INSERT_ID(),'admin','admin');
 
 SELECT * FROM Empleado;
 SELECT * FROM Persona;
+
+-- Eliminar columna
+ALTER TABLE Empleado
+DROP COLUMN salario;
+
+SELECT * FROM Empleado;
+
+-- Recuperar la columna eliminada
+ALTER TABLE Empleado
+ADD COLUMN salario DOUBLE;
+
+SELECT * FROM Empleado;
 
 -- Eliminar datos de Persona
 DELETE FROM Persona WHERE idPersona = 6;
@@ -229,6 +282,17 @@ INSERT INTO Doctor (especialidad,licenciaMedica,idEmpleado,usuarioCreacion,usuar
 ('Neurología','DOM-2026-04',4,'admin','admin'),
 ('Dermatología','DOM-2026-05',5,'admin','admin');
 
+-- Modificar tamaño de columna
+ALTER TABLE Doctor
+MODIFY COLUMN especialidad VARCHAR(150);
+
+SELECT * FROM Doctor;
+
+-- Regresar al tamaño original
+ALTER TABLE Doctor
+MODIFY COLUMN especialidad VARCHAR(100);
+
+
 -- DATOS ENFERMEROS
 INSERT INTO Enfermero (turno,areaAsignada,idEmpleado,usuarioCreacion,usuarioModificacion) VALUES
 ('Matutino','Urgencias',6,'admin','admin'),
@@ -259,20 +323,20 @@ DELETE FROM Empleado WHERE idPersona = 10;
 DELETE FROM Empleado WHERE idPersona = LAST_INSERT_ID();
 
 -- Eliminar datos de Doctor
-DELETE FROM Doctor WHERE idPersona = 6;
-DELETE FROM Doctor WHERE idPersona = 7;
-DELETE FROM Doctor WHERE idPersona = 8;
-DELETE FROM Doctor WHERE idPersona = 9;
-DELETE FROM Doctor WHERE idPersona = 10;
-DELETE FROM Doctor WHERE idPersona = LAST_INSERT_ID();
+DELETE FROM Doctor WHERE idEmpleado = 6;
+DELETE FROM Doctor WHERE idEmpleado = 7;
+DELETE FROM Doctor WHERE idEmpleado = 8;
+DELETE FROM Doctor WHERE idEmpleado = 9;
+DELETE FROM Doctor WHERE idEmpleado = 10;
+DELETE FROM Doctor WHERE idEmpleado = LAST_INSERT_ID();
 
 -- Eliminar datos de Enfermero
-DELETE FROM Enfermero WHERE idPersona = 1;
-DELETE FROM Enfermero WHERE idPersona = 2;
-DELETE FROM Enfermero WHERE idPersona = 3;
-DELETE FROM Enfermero WHERE idPersona = 4;
-DELETE FROM Enfermero WHERE idPersona = 5;
-DELETE FROM Enfermero WHERE idPersona = LAST_INSERT_ID();
+DELETE FROM Enfermero WHERE idEmpleado = 1;
+DELETE FROM Enfermero WHERE idEmpleado = 2;
+DELETE FROM Enfermero WHERE idEmpleado = 3;
+DELETE FROM Enfermero WHERE idEmpleado = 4;
+DELETE FROM Enfermero WHERE idEmpleado = 5;
+DELETE FROM Enfermero WHERE idEmpleado = LAST_INSERT_ID();
 
 -- TABLA ADMINISTRADOR
 CREATE TABLE Administrador(
@@ -300,12 +364,20 @@ INSERT INTO Administrador (idEmpleado,usuario,contrasena,usuarioCreacion,usuario
 SELECT * FROM Administrador;
 
 -- Eliminar datos de Administrador
-DELETE FROM Administrador WHERE idPersona = 1;
-DELETE FROM Administrador WHERE idPersona = 2;
-DELETE FROM Administrador WHERE idPersona = 3;
-DELETE FROM Administrador WHERE idPersona = 4;
-DELETE FROM Administrador WHERE idPersona = 5;
-DELETE FROM Administrador WHERE idPersona = LAST_INSERT_ID();
+DELETE FROM Administrador WHERE idEmpleado = 1;
+DELETE FROM Administrador WHERE idEmpleado = 2;
+DELETE FROM Administrador WHERE idEmpleado = 3;
+DELETE FROM Administrador WHERE idEmpleado = 4;
+DELETE FROM Administrador WHERE idEmpleado = 5;
+DELETE FROM Administrador WHERE idEmpleado = LAST_INSERT_ID();
+
+SELECT * FROM Administrador;
+
+-- Recuperar el registro eliminado
+INSERT INTO Administrador
+(idAdmin,idEmpleado,usuario,contrasena,usuarioCreacion,usuarioModificacion)
+VALUES
+(1,2,'admin1','1234','admin','admin');
 
 
 -- TABLA MANTENIMIENTO
@@ -335,12 +407,12 @@ INSERT INTO Mantenimiento (descripcion,fecha,estado,idEmpleado,usuarioCreacion,u
 SELECT * FROM Mantenimiento;
 
 -- Eliminar datos de Mantenimiento
-DELETE FROM Mantenimiento WHERE idPersona = 1;
-DELETE FROM Mantenimiento WHERE idPersona = 2;
-DELETE FROM Mantenimiento WHERE idPersona = 3;
-DELETE FROM Mantenimiento WHERE idPersona = 4;
-DELETE FROM Mantenimiento WHERE idPersona = 5;
-DELETE FROM Mantenimiento WHERE idPersona = LAST_INSERT_ID();
+DELETE FROM Mantenimiento WHERE idEmpleado = 1;
+DELETE FROM Mantenimiento WHERE idEmpleado = 2;
+DELETE FROM Mantenimiento WHERE idEmpleado = 3;
+DELETE FROM Mantenimiento WHERE idEmpleado = 4;
+DELETE FROM Mantenimiento WHERE idEmpleado = 5;
+DELETE FROM Mantenimiento WHERE idEmpleado = LAST_INSERT_ID();
 
 -- TABLA CITAS
 CREATE TABLE CitaMedica(
@@ -371,12 +443,12 @@ INSERT INTO CitaMedica (fecha,hora,motivoConsulta,idPaciente,idDoctor,usuarioCre
 SELECT * FROM CitaMedica;
 
 -- Eliminar datos de CitaMedica
-DELETE FROM CitaMedica WHERE idPersona = 1;
-DELETE FROM CitaMedica WHERE idPersona = 2;
-DELETE FROM CitaMedica WHERE idPersona = 3;
-DELETE FROM CitaMedica WHERE idPersona = 4;
-DELETE FROM CitaMedica WHERE idPersona = 5;
-DELETE FROM CitaMedica WHERE idPersona = LAST_INSERT_ID();
+DELETE FROM CitaMedica WHERE idDoctor = 1;
+DELETE FROM CitaMedica WHERE idDoctor = 2;
+DELETE FROM CitaMedica WHERE idDoctor = 3;
+DELETE FROM CitaMedica WHERE idDoctor = 4;
+DELETE FROM CitaMedica WHERE idDoctor = 5;
+DELETE FROM CitaMedica WHERE idDoctor = LAST_INSERT_ID();
 
 -- TABLA RECETA
 CREATE TABLE Receta(
@@ -407,12 +479,12 @@ INSERT INTO Receta (descripcion,medicamentos,indicaciones,idCita,idDoctor,usuari
 SELECT * FROM Receta;
 
 -- Eliminar datos de Receta
-DELETE FROM Receta WHERE idPersona = 1;
-DELETE FROM Receta WHERE idPersona = 2;
-DELETE FROM Receta WHERE idPersona = 3;
-DELETE FROM Receta WHERE idPersona = 4;
-DELETE FROM Receta WHERE idPersona = 5;
-DELETE FROM Receta WHERE idPersona = LAST_INSERT_ID();
+DELETE FROM Receta WHERE idDoctor = 1;
+DELETE FROM Receta WHERE idDoctor = 2;
+DELETE FROM Receta WHERE idDoctor = 3;
+DELETE FROM Receta WHERE idDoctor = 4;
+DELETE FROM Receta WHERE idDoctor = 5;
+DELETE FROM Receta WHERE idDoctor = LAST_INSERT_ID();
 
 -- TABLA HISTORIAL MEDICO
 CREATE TABLE HistorialMedico(
@@ -445,15 +517,88 @@ VALUES
 
 SELECT * FROM HistorialMedico;
 
--- Eliminar datos de Receta
-DELETE FROM HistorialMedico WHERE idPersona = 1;
-DELETE FROM HistorialMedico WHERE idPersona = 2;
-DELETE FROM HistorialMedico WHERE idPersona = 3;
-DELETE FROM HistorialMedico WHERE idPersona = 4;
-DELETE FROM HistorialMedico WHERE idPersona = 5;
-DELETE FROM HistorialMedico WHERE idPersona = LAST_INSERT_ID();
+-- Eliminar datos de HistorialMedico
+DELETE FROM HistorialMedico WHERE idDoctor = 1;
+DELETE FROM HistorialMedico WHERE idDoctor = 2;
+DELETE FROM HistorialMedico WHERE idDoctor = 3;
+DELETE FROM HistorialMedico WHERE idDoctor = 4;
+DELETE FROM HistorialMedico WHERE idDoctor = 5;
+DELETE FROM HistorialMedico WHERE idDoctor = LAST_INSERT_ID();
 
--- Elimianr Tablas
+
+-- INNER JOIN
+SELECT Persona.nombre, Paciente.tipoPaciente
+FROM Persona
+INNER JOIN Paciente
+ON Persona.idPersona = Paciente.idPersona;
+
+-- LEFT JOIN
+SELECT Persona.nombre, Empleado.salario
+FROM Persona
+LEFT JOIN Empleado
+ON Persona.idPersona = Empleado.idPersona;
+
+-- RIGHT JOIN
+SELECT Persona.nombre, Empleado.salario
+FROM Persona
+RIGHT JOIN Empleado
+ON Persona.idPersona = Empleado.idPersona;
+
+-- FULL JOIN
+SELECT Persona.nombre, Empleado.salario
+FROM Persona
+LEFT JOIN Empleado
+ON Persona.idPersona = Empleado.idPersona
+
+UNION
+
+SELECT Persona.nombre, Empleado.salario
+FROM Persona
+RIGHT JOIN Empleado
+ON Persona.idPersona = Empleado.idPersona;
+
+
+-- VIEW
+CREATE VIEW VistaPacientes AS
+SELECT 
+Persona.nombre,
+Persona.edad,
+Paciente.numeroHistoriaClinica,
+Paciente.tipoPaciente
+FROM Persona
+INNER JOIN Paciente
+ON Persona.idPersona = Paciente.idPersona;
+
+SELECT * FROM VistaPacientes;
+
+-- Eliminar vista
+DROP VIEW IF EXISTS VistaPacientes;
+
+
+
+-- STORED PROCEDURE
+DELIMITER //
+
+CREATE PROCEDURE MostrarDoctores()
+BEGIN
+	SELECT 
+	idDoctor,
+	especialidad,
+	licenciaMedica
+	FROM Doctor;
+END //
+
+DELIMITER ;
+
+-- Ejecutar procedimiento
+CALL MostrarDoctores();
+
+-- Eliminar procedimiento almacenado
+DROP PROCEDURE IF EXISTS MostrarDoctores;
+
+
+
+-- Eliminar Tablas
 DROP TABLE IF EXISTS HistorialMedico;
 DROP TABLE IF EXISTS Receta;
 DROP TABLE IF EXISTS CitaMedica;
@@ -465,5 +610,5 @@ DROP TABLE IF EXISTS Paciente;
 DROP TABLE IF EXISTS Empleado;
 DROP TABLE IF EXISTS Persona;
 
--- Elimianr Base de Datos
+-- Eliminar Base de Datos
 DROP DATABASE IF EXISTS Hospital;
